@@ -1,5 +1,5 @@
 from django.contrib import admin
-from shipper_app.models import Shipper
+from shipper_app.models import Shipper, DiscountShipper
 
 
 @admin.register(Shipper)
@@ -16,4 +16,14 @@ class ShipperAdmin(admin.ModelAdmin):
         "is_active",
         "created_at",
         "updated_at",
+    )
+
+
+@admin.register(DiscountShipper)
+class DiscountDealerAdmin(admin.ModelAdmin):
+    list_filter = (
+        "discount",
+        "bought_cars",
+        "showroom",
+        "shipper",
     )
