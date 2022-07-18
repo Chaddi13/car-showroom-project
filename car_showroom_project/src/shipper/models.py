@@ -1,10 +1,10 @@
 from django.db import models
-from core.models.abstract_models import IsActive, CreatedAt, UpdatedAt, Info
-from shipper_app.utils import DiscountRanks
+from src.core.models.abstract_models import IsActive, CreatedAt, UpdatedAt, Info
+from src.shipper.utils import DiscountRanks
 
 
 class Shipper(Info, IsActive, CreatedAt, UpdatedAt):
-    found_year = models.IntegerField()
+    found_year = models.PositiveIntegerField()
     description = models.TextField()
     number_of_buyers = models.PositiveIntegerField(default=0)
 
@@ -21,13 +21,13 @@ class DiscountShipper(models.Model):
     )
     bought_cars = models.PositiveIntegerField(default=0)
     showroom = models.ForeignKey(
-        "showroom_app.Showroom",
+        "showroom.Showroom",
         related_name="showroom_discounts",
         on_delete=models.CASCADE,
         null=True,
     )
     shipper = models.ForeignKey(
-        "shipper_app.Shipper",
+        "shipper.Shipper",
         related_name="shipper_discounts",
         on_delete=models.CASCADE,
         null=True,

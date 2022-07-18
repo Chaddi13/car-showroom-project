@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ShipperAppConfig(AppConfig):
+class TransactionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'shipper_app'
+    name = 'src.transaction'

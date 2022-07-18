@@ -1,5 +1,5 @@
 from django.contrib import admin
-from showroom_app.models import Showroom, DiscountShowroom
+from src.showroom.models import Showroom, DiscountShowroom
 
 
 @admin.register(Showroom)

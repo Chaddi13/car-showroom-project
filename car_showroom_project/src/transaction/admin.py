@@ -1,5 +1,5 @@
 from django.contrib import admin
-from transaction.models import SalesShipperToShowroom, SalesShowroomToCustomer
+from src.transaction.models import SalesShipperToShowroom, SalesShowroomToCustomer
 
 
 @admin.register(SalesShowroomToCustomer)

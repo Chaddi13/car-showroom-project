@@ -1,5 +1,5 @@
 from django.contrib import admin
-from shipper_app.models import Shipper
+from src.shipper.models import Shipper
 
 
 @admin.register(Shipper)

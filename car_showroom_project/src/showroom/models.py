@@ -1,9 +1,9 @@
 from django.db import models
-from core.models.abstract_models import Info, IsActive, CreatedAt, UpdatedAt, Discount
+from src.core.models.abstract_models import Info, IsActive, CreatedAt, UpdatedAt, Discount
 
 
 class Showroom(Info, IsActive, CreatedAt, UpdatedAt):
-    found_year = models.IntegerField()
+    found_year = models.PositiveIntegerField()
     description = models.TextField()
 
     class Meta:
@@ -22,7 +22,7 @@ class DiscountShowroom(CreatedAt, UpdatedAt, IsActive, Discount):
         verbose_name="showroom",
     )
     discount_showroom_for_car = models.ForeignKey(
-        "car_app.Car",
+        "car.Car",
         on_delete=models.PROTECT,
         related_name="showroom_car_on_sale",
         null=True,

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from car_app.models import Car
+from src.car.models import Car
 
 
 @admin.register(Car)
