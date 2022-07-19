@@ -7,7 +7,7 @@ from src.core.enums.enums import CustomerSex
 class Customer(Info, CreatedAt, UpdatedAt):
     surname = models.CharField(max_length=30)
     age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(120)])
-    sex = models.CharField(max_length=20, choices=CustomerSex.choices())
+    sex = models.CharField(max_length=255, choices=CustomerSex.choices())
     licence = models.BooleanField(default=True)
 
     class Meta:

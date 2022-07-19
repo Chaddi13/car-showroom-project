@@ -47,7 +47,7 @@ class SalesShipperToShowroom(CreatedAt):
     car = models.ForeignKey(
         "car.Car", on_delete=models.PROTECT, related_name="car_for_sale", null=True
     )
-    price = models.DecimalField(max_digits=20, decimal_places=2)
+    price = models.DecimalField(max_digits=20, decimal_places=2, validators=[MinValueValidator(0.00)])
     amount_of_discount = models.IntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(30)]
     )
