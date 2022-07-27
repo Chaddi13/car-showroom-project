@@ -1,76 +1,45 @@
-from src.core.api_interface.api_interface import CustomViewSet
-from src.core.permissions.permissions import IsCustomerUser, IsShipperUser, IsShowroomUser
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .filters import ShipperToShowroomFilter, ShowroomToCustomerFilter
-from .models import SalesShipperToShowroom, SalesShowroomToCustomer
-from .serializers import (
+from src.transaction.filters import ShipperToShowroomFilter, ShowroomToCustomerFilter
+from src.transaction.models import SalesShipperToShowroom, SalesShowroomToCustomer
+from src.transaction.serializers import (
     SalesShipperToShowroomSerializer,
     SalesShowroomToBuyersSerializer,
 )
 
 
-class TransactionShowroomToCustomerViewSet(CustomViewSet):
-    """View for transactions from Showroom to customer"""
+class TransactionShowroomToCustomerPublicView(ReadOnlyModelViewSet):
+    """View information about Shippers"""
 
     queryset = SalesShowroomToCustomer.objects.all()
     serializer_class = SalesShowroomToBuyersSerializer
-    permission_classes = [(IsShowroomUser | IsCustomerUser | IsAdminUser)]
+    permission_classes = (AllowAny,)
     filterset_class = ShowroomToCustomerFilter
 
-    @action(methods=["get"], detail=False, url_path="history")
-    def list_of_transactions(self, request):
-        """Return transactions list from Showroom to customers"""
-        return super(TransactionShowroomToCustomerViewSet, self).get(request)
 
-    @action(methods=["get"], detail=True, url_path="showroom-details")
-    def showroom_to_customer_transaction_history(self, request, pk):
-        showroom_transaction = SalesShowroomToCustomer.objects.filter(showroom=pk)
-        serializer_data = SalesShowroomToBuyersSerializer(
-            showroom_transaction, many=True
-        ).data
-        return Response(
-            {"Transaction history for showroom": serializer_data},
-            status=status.HTTP_200_OK,
-        )
+class TransactionShowroomToCustomerPrivateView(ModelViewSet):
+    """View information about Shippers"""
 
-    @action(methods=["get"], detail=True, url_path="customer-details")
-    def details_of_transaction(self, request, pk):
-        """Return list of customer transactions"""
-        customers_transactions = SalesShowroomToCustomer.objects.filter(customer=pk)
-        data = SalesShowroomToBuyersSerializer(customers_transactions, many=True).data
-        return Response(
-            {"Transaction history for customer": data}, status=status.HTTP_200_OK
-        )
+    queryset = SalesShowroomToCustomer.objects.all()
+    serializer_class = SalesShowroomToBuyersSerializer
+    permission_classes = (IsAuthenticated,)
+    filterset_class = ShowroomToCustomerFilter
 
 
-class TransactionShipperToShowroomViewSet(CustomViewSet):
+class TransactionShipperToShowroomPublicView(ReadOnlyModelViewSet):
+    """View information about Shippers"""
+
     queryset = SalesShipperToShowroom.objects.all()
     serializer_class = SalesShipperToShowroomSerializer
-    permission_classes = [(IsShipperUser | IsShowroomUser | IsAdminUser)]
+    permission_classes = (AllowAny,)
     filterset_class = ShipperToShowroomFilter
 
-    @action(methods=["get"], detail=False, url_path="history")
-    def list_of_transactions(self, request):
-        """Return transactions list from Dealer to Showroom"""
-        return super(TransactionShipperToShowroomViewSet, self).get(request)
 
-    @action(methods=["get"], detail=True, url_path="details")
-    def details_of_transaction(self, request, pk):
-        """Return list of customer transactions"""
-        shipper_transactions = SalesShipperToShowroom.objects.filter(shipper=pk)
-        data = SalesShipperToShowroomSerializer(shipper_transactions, many=True).data
-        return Response(
-            {"Transaction history to shipper": data}, status=status.HTTP_200_OK
-        )
+class TransactionShipperToShowroomPrivateView(ModelViewSet):
+    """View information about Shippers"""
 
-
-class DiscountViewSet(CustomViewSet):
-    """
-    A viewset for discounts of showrooms and suppliers
-    """
-
-    pass
+    queryset = SalesShipperToShowroom.objects.all()
+    serializer_class = SalesShipperToShowroomSerializer
+    permission_classes = (IsAuthenticated,)
+    filterset_class = ShipperToShowroomFilter

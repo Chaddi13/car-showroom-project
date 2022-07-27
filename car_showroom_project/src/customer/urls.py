@@ -1,11 +1,10 @@
-from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework import routers
 
-from src.customer.views import CustomerListAPIView, get_details
+from src.customer.views import CustomerPublicView, CustomerPrivateView
 
-urlpatterns = [
-    path("customer/", CustomerListAPIView.as_view()),
-    path("customer/details/<int:pk>", get_details),
-]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+router = routers.DefaultRouter()
+router.register(r"list", CustomerPublicView, "PublicCustomer")
+router.register(r"private", CustomerPrivateView, "Private Customer")
+
+urlpatterns = router.urls

@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from src.shipper.models import Shipper, DiscountShipper
 
 
@@ -8,6 +9,8 @@ class ShipperAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
         "number_of_buyers",
+        "unique_buyers",
+        "total_cars",
     )
     list_filter = (
         "name",
@@ -17,6 +20,16 @@ class ShipperAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+
+    def unique_buyers(self, instance):
+        names = Shipper.objects.get(pk=instance.id).shipper_that_sells.values("showroom__name").distinct()
+        buyers = []
+        for x in range(len(names)):
+            buyers.append(names[x]["showroom__name"])
+        return ', '.join(buyers)
+
+    def total_cars(self, instance):
+        return Shipper.objects.get(pk=instance.id).shippers_cars.values("make").count()
 
 
 @admin.register(DiscountShipper)

@@ -1,43 +1,28 @@
-from src.core.api_interface.api_interface import CustomViewSet
-from src.core.permissions.permissions import IsShowroomUser
-from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import AllowAny, IsAdminUser
-from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .filters import ShowroomFilter
-from .models import Showroom
-from .serializers import MainShowroomSerializer
+from src.showroom.filters import ShowroomFilter
+from src.showroom.models import Showroom
+from src.showroom.serializers import MainShowroomSerializer
 
 
-class ShowroomsViewSet(CustomViewSet):
+class ShowroomPublicView(ReadOnlyModelViewSet):
+    """View information about Showrooms"""
+
     queryset = Showroom.objects.all()
     serializer_class = MainShowroomSerializer
-    permission_classes = [(IsAdminUser | IsShowroomUser)]
+    permission_classes = (AllowAny,)
     filterset_class = ShowroomFilter
-    filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ("name",)
+    # filter_backends = (SearchFilter, OrderingFilter)
+    # search_fields = ("name",)
 
-    @action(methods=["get"], detail=False, url_path="list")
-    def list_of_showrooms(self, request):
-        return super(ShowroomsViewSet, self).get(request)
+class ShowroomPrivateView(ModelViewSet):
+    """View and edit information about Showrooms"""
 
-    @action(methods=["get"], detail=True, url_path="details")
-    def detail_of_showroom(self, request, pk):
-        showroom_detail = Showroom.objects.get(pk=pk)
-        data = MainShowroomSerializer(showroom_detail).data
-        return Response({"Showroom details": data}, status=status.HTTP_200_OK)
-
-    @action(methods=["post"], url_path="create", detail=False)
-    def create_showroom(self, request):
-        return super(MainShowroomSerializer, self).post(request)
-
-    @action(
-        detail=True,
-        methods=["delete"],
-        permission_classes=[AllowAny],
-        url_path="delete",
-    )
-    def delete(self, request, pk):
-        return super(ShowroomsViewSet, self).delete(request, pk)
+    queryset = Showroom.objects.all()
+    serializer_class = MainShowroomSerializer
+    permission_classes = (IsAuthenticated,)
+    filterset_class = ShowroomFilter
+    # filter_backends = (SearchFilter, OrderingFilter)
+    # search_fields = ("name",)

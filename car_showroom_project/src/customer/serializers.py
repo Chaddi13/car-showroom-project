@@ -10,7 +10,7 @@ class CustomerOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomerOrder
-        fields = ["is_available", "price", "car"]
+        fields = ["price", "car"]
 
 
 class CustomerSerializer(CountryFieldMixin, serializers.ModelSerializer):
@@ -32,8 +32,6 @@ class CustomerSerializer(CountryFieldMixin, serializers.ModelSerializer):
 
 
 class CustomerShortInfoSerializer(CountryFieldMixin, serializers.ModelSerializer):
-    # number_of_purchases = serializers.IntegerField()
-
     class Meta:
         model = Customer
-        fields = ["name"]
+        fields = ["name", "surname"]

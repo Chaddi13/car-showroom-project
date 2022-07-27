@@ -53,7 +53,7 @@ class SalesShipperToShowroom(CreatedAt):
     )
 
     class Meta:
-        db_table = "sales_dealer_to_showroom"
+        db_table = "sales_shipper_to_showroom"
 
     def __str__(self):
         return f"{self.showroom} {self.shipper} {self.car} {self.price} {self.amount_of_discount} {self.created_at}"

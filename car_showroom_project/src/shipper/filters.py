@@ -6,4 +6,8 @@ from .models import Shipper
 class ShipperFilter(filters.FilterSet):
     class Meta:
         model = Shipper
-        fields = {"name": ["iexact"], "email": ["iexact"]}
+        fields = {
+            "name": ["icontains"],
+            "country": ["icontains"],
+            "number_of_buyers":["exact", "lt", "gt"],
+        }

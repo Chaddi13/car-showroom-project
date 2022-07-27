@@ -1,43 +1,20 @@
-from src.customer.serializers import CustomerShortInfoSerializer
-from src.car.models import Car
 from django.db.models import Count, F
 from django_countries.serializers import CountryFieldMixin
 from rest_framework import serializers
 
-from .models import DiscountShowroom, Showroom
-
-
-class ShowroomsCarsSerializer(serializers.ModelSerializer):
-    total_models = serializers.IntegerField()
-
-    class Meta:
-        model = Car
-        fields = [
-            "make",
-            "model",
-            "total_models",
-        ]
+from src.showroom.models import Showroom
+from src.car.serializers import CarSerializer
+from src.customer.serializers import CustomerShortInfoSerializer
 
 
 class MainShowroomSerializer(CountryFieldMixin, serializers.ModelSerializer):
-    cars = serializers.SerializerMethodField()
+    cars = CarSerializer(many=True, read_only=True)
     total_cars = serializers.SerializerMethodField()
     buyers = serializers.SerializerMethodField()
 
     class Meta:
         model = Showroom
-        fields = ["name", "country", "email", "balance", "cars", "total_cars", "buyers"]
-
-    def get_cars(self, instance):
-        cars = (
-            Car.objects.filter(showroom=instance)
-            .values("model", "make")
-            .annotate(total_models=Count("model"))
-            .order_by()
-        )
-
-        serializer = ShowroomsCarsSerializer(cars, many=True).data
-        return serializer
+        fields = ["name", "country", "found_year", "email", "balance", "description", "cars", "total_cars", "buyers"]
 
     def get_total_cars(self, instance):
         return instance.showrooms_cars.all().count()
@@ -46,8 +23,8 @@ class MainShowroomSerializer(CountryFieldMixin, serializers.ModelSerializer):
         queryset = Showroom.objects.get(pk=instance.id)
         buyers = (
             queryset.showroom.all()
-            .values(name=F("customer__name"))
-            .annotate(number_of_purchases=Count("customer"))
+            .values(name=F("customer__name"), surname=F("customer__surname"))
+            .distinct()
             .order_by()
         )
         serializer_data = CustomerShortInfoSerializer(buyers, many=True).data
@@ -55,13 +32,7 @@ class MainShowroomSerializer(CountryFieldMixin, serializers.ModelSerializer):
         return serializer_data
 
 
-class ShortShowroomSerializer(CountryFieldMixin, serializers.ModelSerializer):
+class ShowroomShortInfoSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = Showroom
-        fields = ["name", "country"]
-
-
-class DiscountShowroomSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DiscountShowroom
-        fields = "__all__"
+        fields = ["name", "email"]

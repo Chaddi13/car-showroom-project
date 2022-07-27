@@ -7,6 +7,8 @@ services:
       python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./car_showroom_project/:/usr/src/app/
     ports:
       - "8000:8000"
     depends_on:
@@ -20,6 +22,8 @@ services:
       - POSTGRES_DB=carshowroom
       - POSTGRES_USER=chaddi
       - POSTGRES_PASSWORD=wfii123098
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:

@@ -1,46 +1,29 @@
-from src.core.api_interface.api_interface import CustomViewSet
-from src.core.permissions.permissions import IsShipperUser
-from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .filters import ShipperFilter
-from .models import Shipper
-from .serializers import ShipperSerializer
+from src.shipper.filters import ShipperFilter
+from src.shipper.models import Shipper
+from src.shipper.serializers import ShipperSerializer
 
 
-class ShipperViewSet(CustomViewSet):
-    """
-    A viewset for information about shippers and theirs cars
-    """
+class ShipperPublicView(ReadOnlyModelViewSet):
+    """View information about Shippers"""
 
     queryset = Shipper.objects.all()
     serializer_class = ShipperSerializer
-    permission_classes = [(IsShipperUser | IsAdminUser)]
+    permission_classes = (AllowAny,)
     filterset_class = ShipperFilter
-    filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ("name",)
+    # filter_backends = (SearchFilter, OrderingFilter)
+    # search_fields = ("name",)
 
-    @action(
-        methods=["get"],
-        detail=False,
-        url_path="list",
-    )
-    def list_of_shippers(self, request):
-        return super(ShipperViewSet, self).get(request)
 
-    @action(methods=["get"], detail=True, url_path="details")
-    def detail_of_shipper(self, request, pk):
-        shipper_detail = Shipper.objects.get(pk=pk)
-        data = ShipperSerializer(shipper_detail).data
-        return Response({"shipper details": data}, status=status.HTTP_200_OK)
+class ShipperPrivateView(ModelViewSet):
+    """View and edit information about Shippers"""
 
-    @action(methods=["post"], url_path="create", detail=False)
-    def create_shipper(self, request):
-        return super(ShipperViewSet, self).post(request)
-
-    @action(detail=True, methods=["delete"], url_path="delete")
-    def delete(self, request, pk):
-        return super(ShipperViewSet, self).delete(request, pk)
+    queryset = Shipper.objects.all()
+    serializer_class = ShipperSerializer
+    permission_classes = (IsAuthenticated,)
+    filterset_class = ShipperFilter
+    # filter_backends = (SearchFilter, OrderingFilter)
+    # search_fields = ("name",)
