@@ -9,5 +9,5 @@ class ShipperFilter(filters.FilterSet):
         fields = {
             "name": ["icontains"],
             "country": ["icontains"],
-            "number_of_buyers":["exact", "lt", "gt"],
+            "number_of_buyers": ["exact", "lt", "gt"],
         }
