@@ -1,76 +1,106 @@
 import pytest
+
 from src.customer.models import Customer
 
 
 url = "/api/v1/customer/list/"
 private_url = "/api/v1/customer/private/"
 
+payload = dict(name="Alexandr",
+               surname="Snitko",
+               email="alex.sn@mail.ru",
+               country="BY",
+               sex="MALE",
+               age=21,
+               license=True)
+
+update_payload = dict(name="Alexandr",
+                      surname="Nesnitko",
+                      email="alex.sn@mail.ru",
+                      country="AO",
+                      sex="MALE",
+                      age=25,
+                      license=True)
+
+payload2 = dict(name="Kirill",
+                surname="Test",
+                email="kirill.test@gmail.com",
+                country="AO",
+                sex="FEMALE",
+                age=26,
+                license=False)
+
+update_payload2 = dict(name="Kirill",
+                       surname="NotTest",
+                       email="kir.not@test.ru",
+                       country="RU",
+                       sex="MALE",
+                       age=29,
+                       license=True)
+
 
 @pytest.mark.django_db
-def test_customer_list(client, auth_client):
+def test_customer_get(client, auth_client, get_responses):
     """
     Ensure that anybody can get a list of Customers.
     """
-    response = client.get(url)
-    auth_response = auth_client.get(private_url)
-    non_auth_response = client.get(private_url)
-
-    assert response.status_code == 200
-    assert auth_response.status_code == 200
-    assert non_auth_response.status_code == 403
+    assert get_responses(client=client, url=url) == 200
+    assert get_responses(client=auth_client, url=private_url) == 200
+    assert get_responses(client=client, url=private_url) == 403
 
 
 @pytest.mark.django_db
-def test_customer_details(client, auth_client):
+@pytest.mark.parametrize("payload", [
+    payload,
+    payload2
+])
+def test_customer_post(payload, client, auth_client, post_responses):
     """
-    Ensure that only authorized can create, update or delete a Customer.
-    Ensure anybody can get details about Customers.
+    Ensure that only authorized user can create a Customer.
     """
-    payload = dict(name="Alexandr",
-                   surname="Snitko",
-                   email="alex.sn@mail.ru",
-                   country="BY",
-                   sex="MALE",
-                   age=21,
-                   license=True)
+    assert post_responses(client=client, url=private_url, payload=payload).status_code == 403
+    assert post_responses(client=auth_client, url=private_url, payload=payload).status_code == 201
+    assert post_responses(client=auth_client, url=private_url, payload=payload).data["name"] == payload["name"]
 
-    auth_post_response = auth_client.post(private_url, payload)
-    non_auth_post_response = client.post(private_url, payload)
-    data = auth_post_response.data
-    data_id = str(Customer.objects.get(name="Alexandr").id)
 
-    assert auth_post_response.status_code == 201
-    assert non_auth_post_response.status_code == 403
-    assert data["name"] == payload["name"]
+@pytest.mark.django_db
+def test_customer_details(client, auth_client, details_responses, post_responses):
+    """
+    Ensure that anybody can get info about separate Customer.
+    """
+    post_responses(client=auth_client, url=private_url, payload=payload)
+    assert details_responses(client=client, url=url, model=Customer, payload=payload) == 200
+    assert details_responses(client=auth_client, url=private_url, model=Customer, payload=payload) == 200
+    assert details_responses(client=client, url=private_url, model=Customer, payload=payload) == 403
 
-    response = client.get(url+data_id+"/")
-    auth_response = auth_client.get(private_url+data_id+"/")
-    non_auth_response = client.get(private_url+data_id+"/")
 
-    assert response.status_code == 200
-    assert auth_response.status_code == 200
-    assert non_auth_response.status_code == 403
+@pytest.mark.django_db
+def test_customer_delete(client, auth_client, delete_responses, post_responses):
+    """
+    Ensure that only authorized user can delete a Customer.
+    """
+    post_responses(client=auth_client, url=private_url, payload=payload)
+    assert delete_responses(client=client, url=private_url, model=Customer, payload=payload) == 403
+    assert delete_responses(client=auth_client, url=private_url, model=Customer, payload=payload) == 204
 
-    updated_payload = dict(name="Alexandr",
-                           surname="Nesnitko",
-                           email="alex.sn@mail.ru",
-                           country="AO",
-                           sex="MALE",
-                           age=25,
-                           license=True)
 
-    auth_put_response = auth_client.put(private_url+data_id+"/", updated_payload)
-    non_auth_put_response = client.put(private_url+data_id+"/", updated_payload)
-    updated_data = auth_put_response.data
-
-    assert auth_put_response.status_code == 200
-    assert non_auth_put_response.status_code == 403
-    assert updated_data["surname"] == updated_payload["surname"]
-    assert updated_data["country"] == updated_payload["country"]
-    assert updated_data["age"] == updated_payload["age"]
-
-    non_auth_delete_response = client.delete(private_url+data_id+"/")
-    delete_response = auth_client.delete(private_url+data_id+"/")
-
-    assert non_auth_delete_response.status_code == 403
-    assert delete_response.status_code == 204
+@pytest.mark.django_db
+@pytest.mark.parametrize("payload, update_payload", [
+    (payload, update_payload),
+    (payload2, update_payload2)
+])
+def test_customer_put(payload, update_payload, client, auth_client, put_responses, post_responses):
+    """
+    Ensure that only authorized user can update a Customer.
+    """
+    post_responses(client=auth_client, url=private_url, payload=payload)
+    assert put_responses(client=client,
+                         url=private_url,
+                         model=Customer,
+                         payload=payload,
+                         update_payload=update_payload) == 403
+    assert put_responses(client=auth_client,
+                         url=private_url,
+                         model=Customer,
+                         payload=payload,
+                         update_payload=update_payload) == 200
