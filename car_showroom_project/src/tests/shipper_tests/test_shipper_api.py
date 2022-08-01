@@ -1,7 +1,6 @@
 import pytest
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
-from src.users.models import ShowroomUser
 from src.shipper.models import Shipper
 
 
@@ -73,7 +72,7 @@ def test_shipper_get(client, auth_client, get_responses):
 ])
 def test_shipper_post(payload, client, auth_client, post_responses):
     """
-    Ensure that only authorized user can create a Shipperm.
+    Ensure that only authorized user can create a Shipper.
     """
     assert post_responses(client=client, url=private_url, payload=payload).status_code == 403
     assert post_responses(client=auth_client, url=private_url, payload=payload).status_code == 201

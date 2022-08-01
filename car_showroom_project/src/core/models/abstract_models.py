@@ -25,10 +25,18 @@ class UpdatedAt(models.Model):
 
 
 class Info(models.Model):
+    balance = models.DecimalField(max_digits=15, decimal_places=2, default=500000.00)
+    country = CountryField(blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class BusinessInfo(models.Model):
     name = models.CharField(max_length=20)
     email = models.EmailField()
-    balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
-    country = CountryField(blank=True)
+    found_year = models.PositiveIntegerField()
+    description = models.TextField()
 
     class Meta:
         abstract = True

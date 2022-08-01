@@ -23,7 +23,7 @@ class MainShowroomSerializer(CountryFieldMixin, serializers.ModelSerializer):
         queryset = Showroom.objects.get(pk=instance.id)
         buyers = (
             queryset.showroom.all()
-            .values(name=F("customer__name"), surname=F("customer__surname"))
+            .values(name=F("customer__first_name"), surname=F("customer__last_name"))
             .distinct()
             .order_by()
         )

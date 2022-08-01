@@ -11,17 +11,19 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from environ import Env
+
+env = Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+env.read_env(os.path.join(BASE_DIR, ".env"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+zfv$qi-bdt8$m1%u2@5me5$0igm+5%@k7)cedwjd7zy#so&g!'
-
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -43,7 +45,6 @@ INSTALLED_APPS = [
     'src.shipper',
     'src.showroom',
     'src.transaction',
-    'src.users',
 
     'django_countries',
     'rest_framework',
@@ -90,9 +91,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "carshowroom",
-        "USER": "chaddi",
-        "PASSWORD": "wfii123098",
+        "NAME": env('DATABASE_NAME'),
+        "USER": env('DATABASE_USER'),
+        "PASSWORD": env('DATABASE_PASSWORD'),
         "HOST": "db",
         "PORT": "5432",
     }
@@ -150,7 +151,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 2,
 }
 
-AUTH_USER_MODEL = "users.ShowroomUser"
+AUTH_USER_MODEL = "customer.Customer"
 
 
 if DEBUG:

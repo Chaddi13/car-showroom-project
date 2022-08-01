@@ -6,8 +6,8 @@ class CustomerFilter(filters.FilterSet):
     class Meta:
         model = Customer
         fields = {
-            "name":["iexact"],
-            "surname":["iexact"],
+            "first_name":["iexact"],
+            "last_name":["iexact"],
             "country": ["icontains"],
             "age":["exact", "lt", "gt"]
         }

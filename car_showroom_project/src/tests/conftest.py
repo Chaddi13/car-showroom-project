@@ -1,7 +1,7 @@
 import pytest
 from rest_framework.test import APIClient
 
-from src.users.models import ShowroomUser
+from src.customer.models import Customer
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def client():
 @pytest.fixture
 def auth_client():
     auth_client = APIClient()
-    user = ShowroomUser.objects.create_user(username='alex', password='alex123098')
+    user = Customer.objects.create_user(username='alex', password='alex123098')
     auth_client.force_login(user)
     return auth_client
 

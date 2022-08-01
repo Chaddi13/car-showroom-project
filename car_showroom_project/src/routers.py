@@ -21,7 +21,6 @@ urlpatterns = [
     path("showroom/", include("src.showroom.urls")),
     path("shipper/", include("src.shipper.urls")),
     path("transaction/", include("src.transaction.urls")),
-    path("users/", include("src.users.urls")),
 
     path('swagger(P<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -19,9 +19,10 @@ class CustomerSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = [
-            "name",
-            "surname",
+            "first_name",
+            "last_name",
             "email",
+            "password",
             "balance",
             "country",
             "age",
@@ -34,4 +35,4 @@ class CustomerSerializer(CountryFieldMixin, serializers.ModelSerializer):
 class CustomerShortInfoSerializer(CountryFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ["name", "surname"]
+        fields = ["first_name", "last_name"]

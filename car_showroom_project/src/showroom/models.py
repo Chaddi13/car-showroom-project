@@ -1,11 +1,8 @@
 from django.db import models
-from src.core.models.abstract_models import Info, IsActive, CreatedAt, UpdatedAt, Discount
+from src.core.models.abstract_models import BusinessInfo, Info, IsActive, CreatedAt, UpdatedAt, Discount
 
 
-class Showroom(Info, IsActive, CreatedAt, UpdatedAt):
-    found_year = models.PositiveIntegerField()
-    description = models.TextField()
-
+class Showroom(BusinessInfo, Info, IsActive, CreatedAt, UpdatedAt):
     class Meta:
         db_table = "showroom"
 
