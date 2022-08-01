@@ -8,7 +8,7 @@ class Car(CreatedAt, UpdatedAt):
     make = models.CharField(max_length=20)
     model = models.CharField(max_length=30)
     body_type = models.CharField(max_length=40, choices=CarBodyType.choices())
-    color = models.CharField(max_length=20, choices=CarColor.choices())
+    color = models.CharField(max_length=40, choices=CarColor.choices())
     horsepower = models.PositiveIntegerField()
     year = models.PositiveIntegerField(validators=[MinValueValidator(1900), MaxValueValidator(2025)])
     price = models.DecimalField(max_digits=15, decimal_places=2)

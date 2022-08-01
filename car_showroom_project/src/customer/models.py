@@ -1,20 +1,35 @@
 from django.db import models
-from src.core.models.abstract_models import Info, CreatedAt, UpdatedAt
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+
+from src.core.models.abstract_models import Info, CreatedAt, UpdatedAt
 from src.core.enums.enums import CustomerSex
 
 
-class Customer(Info, CreatedAt, UpdatedAt):
-    surname = models.CharField(max_length=30)
-    age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(120)])
+def default_characteristics():
+    return {"make": "BMW",
+            "model": "X5",
+            "body_type": "Универсал",
+            "color": "Черный",
+            "year": 2021,
+            "horsepower": 900, }
+
+
+class Customer(Info, CreatedAt, UpdatedAt, AbstractUser):
+    age = models.IntegerField(validators=[MinValueValidator(16), MaxValueValidator(120)], null=True)
     sex = models.CharField(max_length=255, choices=CustomerSex.choices())
     licence = models.BooleanField(default=True)
+    car_characteristics = models.JSONField(
+        encoder=None,
+        decoder=None,
+        default=default_characteristics
+    )
 
     class Meta:
         db_table = "customer"
 
     def __str__(self):
-        return f"{self.name} {self.surname} {self.age} {self.sex} {self.email} {self.country}"
+        return f"{self.first_name} {self.last_name} {self.age} {self.sex} {self.email} {self.country}"
 
 
 class CustomerOrder(CreatedAt, UpdatedAt):

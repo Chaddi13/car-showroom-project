@@ -3,6 +3,11 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/car_showroom_project" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache/v" />
+      <excludeFolder url="file://$MODULE_DIR$/car_showroom_project/.pytest_cache/v" />
+      <excludeFolder url="file://$MODULE_DIR$/car_showroom_project/src/shipper/.pytest_cache/v" />
+      <excludeFolder url="file://$MODULE_DIR$/car_showroom_project/src/tests/.pytest_cache/v" />
     </content>
     <orderEntry type="jdk" jdkName="Pipenv (car-showroom-project)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

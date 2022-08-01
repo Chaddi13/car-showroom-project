@@ -1,11 +1,9 @@
 from django.db import models
-from src.core.models.abstract_models import IsActive, CreatedAt, UpdatedAt, Info
-from src.shipper.utils import DiscountRanks
+from src.core.models.abstract_models import IsActive, CreatedAt, UpdatedAt, BusinessInfo, Info
+from .utils import DiscountRanks
 
 
-class Shipper(Info, IsActive, CreatedAt, UpdatedAt):
-    found_year = models.PositiveIntegerField()
-    description = models.TextField()
+class Shipper(BusinessInfo, Info, IsActive, CreatedAt, UpdatedAt):
     number_of_buyers = models.PositiveIntegerField(default=0)
 
     class Meta:

@@ -7,6 +7,10 @@ services:
       python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./car_showroom_project/:/usr/src/app/
+    env_file:
+      - ./car_showroom_project/.env
     ports:
       - "8000:8000"
     depends_on:
@@ -16,10 +20,14 @@ services:
     image: postgres:14.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./car_showroom_project/.env
     environment:
       - POSTGRES_DB=carshowroom
       - POSTGRES_USER=chaddi
       - POSTGRES_PASSWORD=wfii123098
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:
